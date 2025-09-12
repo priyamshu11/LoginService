@@ -2,13 +2,17 @@ package com.example.controller;
 
 
 import com.example.entity.UserEntity;
+import com.example.service.LoginService;
+import org.hibernate.query.UnknownSqlResultSetMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/c1")
@@ -18,7 +22,12 @@ public class MainController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> f1(@PathVariable Long id){
-        return new ResponseEntity<>(loginService.findById(id), HttpStatus.OK);
+        Optional<UserEntity> user=loginService.findById(id);
+        if(user.isPresent()){
+            return new ResponseEntity<>(user.get(),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/all")
@@ -29,8 +38,11 @@ public class MainController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<UserEntity> f3(){
-        return ResponseEntity.ok(loginService.registerService());
+    public ResponseEntity<String> f3(@RequestBody UserEntity userEntity)
+    {
+        loginService.registerUser(userEntity);
+        return new ResponseEntity<>("Created Successfully",HttpStatus.OK);
+
     }
 
     @GetMapping("/validate")
