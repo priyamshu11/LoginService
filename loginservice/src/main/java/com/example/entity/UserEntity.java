@@ -1,22 +1,35 @@
 package com.example.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="user")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @Column
+
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username is required")
+    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
     private String username;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Password is required")
+    @Pattern(
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$",
+            message = "Password must be at least 8 characters long and include a digit, a lowercase letter, an uppercase letter, and a special character"
+    )
     private String password;
 }
