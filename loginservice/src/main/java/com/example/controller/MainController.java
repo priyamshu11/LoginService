@@ -47,7 +47,7 @@ public class MainController {
 
     @GetMapping("/validate")
     public ResponseEntity<Boolean> f4(@RequestBody UserEntity userEntity){
-        return ResponseEntity.ok(loginService.validateCredentials(userEntity.getId(),userEntity.getPassword()));
+        return ResponseEntity.ok(loginService.validateCredentials(userEntity.getUsername(),userEntity.getPassword()));
     }
 
 }

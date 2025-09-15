@@ -40,10 +40,10 @@ public class LoginService {
         loginRepository.deleteById(id);
     }
 
-    public boolean validateCredentials(Long id, String password) {
-        Optional<UserEntity> userOpt = loginRepository.findById(id);
-        if (userOpt.isPresent()) {
-            return userOpt.get().getPassword().equals(password);
+    public Boolean validateCredentials(String username, String password) {
+        UserEntity userOpt = loginRepository.findByUsername(username);
+        if (userOpt != null) {
+            return userOpt.getPassword().equals(password);
         }
         return false;
     }
